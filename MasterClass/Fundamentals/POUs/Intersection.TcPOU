@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="Intersection" Id="{960c0cc2-95ac-479a-ae96-fc97b2baed7e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Intersection
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+
+VAR
+	NS_Road: TrafficDensity ;//  Values: None/Low/Medium/High
+	EW_Road: TrafficDensity ;// Values: None/Low/Medium/High
+	
+	//The traffic lights facing each direction (N_Light.Red := True -> turns the red light on for traffic flowing North to South);
+	N_Light: TrafficLight; //.Red .Amber .Green
+	S_Light: TrafficLight; //.Red .Amber .Green
+	W_Light: TrafficLight; //.Red .Amber .Green
+	E_Light: TrafficLight; //.Red .Amber .Green
+	
+	//pedestrian crossing request buttons
+	N_Ped AT %I*: BOOL;
+	S_Ped AT %I*: BOOL;
+	E_Ped AT %I*: BOOL;
+	W_Ped AT %I*: BOOL;
+	
+	//Does this direction lead out of the area
+	N_Exit	:BOOL;
+	S_Exit 	:BOOL;
+	E_Exit 	:BOOL;
+	W_Exit 	:BOOL;
+	
+	//Stores presense of cars in each direction of the intersection, filled and emptied by the simulation logic
+	CarQueue: ARRAY[1..4,1..10] OF BOOL; //1-4 N S E W
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Change_TrafficFlow" Id="{34aea9bc-4842-4d51-8488-552182821f60}">
+      <Declaration><![CDATA[METHOD Change_TrafficFlow : BOOL
+VAR_INPUT
+	NewNS_Density, NewEW_Density: TrafficDensity;
+	Exit1, Exit2: Compass;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[NS_Road:= NewNS_Density;
+EW_Road:= NewEW_Density;
+
+N_Exit:= S_Exit:= E_Exit := W_Exit :=FALSE;	
+CASE Exit1 OF
+	North:
+	N_Exit:=TRUE;
+	South:
+	S_Exit:=TRUE;
+	East:
+	E_Exit:=TRUE;	
+	West:
+	W_Exit:=TRUE;		
+END_CASE
+CASE Exit2 OF
+	North:
+	N_Exit:=TRUE;
+	South:
+	S_Exit:=TRUE;
+	East:
+	E_Exit:=TRUE;	
+	West:
+	W_Exit:=TRUE;		
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="UpdateLights" Id="{eb0dd59a-34db-4345-ac22-40504db4c4d2}">
+      <Declaration><![CDATA[METHOD UpdateLights : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="Intersection">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="Intersection.Change_TrafficFlow">
+      <LineId Id="6" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="29" Count="8" />
+      <LineId Id="28" Count="0" />
+    </LineIds>
+    <LineIds Name="Intersection.UpdateLights">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

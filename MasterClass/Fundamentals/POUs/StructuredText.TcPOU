@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="StructuredText" Id="{7ea544f2-f1c6-45f3-b400-669543b4addc}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM StructuredText
+VAR
+	ChangeTime		:TIME:=T#1S;
+	CountOnes		:INT:=1;
+	CountFives		:INT:=1;
+	JustOncePer 	:R_TRIG;
+	AlsoCountTo25	: BOOL;
+END_VAR
+VAR CONSTANT
+	ST_DURATION	:TIME:=T#2S;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[	Comparison_GVL.DefaultOFF	:=	Comparison_GVL.NormallyOpen_NO; //Sets DefaultOFF equal to whatever NormallyOpen is set to
+	Comparison_GVL.DefaultON	:=	NOT Comparison_GVL.NormallyClosed_NC; //Sets DefaultON equal to the opposite of what NormallyClosed is set to
+	
+	Comparison_GVL.Tada			:= Comparison_GVL.This_And AND Comparison_GVL.And_This	AND NOT Comparison_GVL.But_NOT_This	AND
+								(Comparison_GVL.This_Or OR Comparison_GVL.Or_This OR NOT Comparison_GVL.Or_NOT_This);
+	
+	// this line ^ and this next one technically do the same thing BUT if I wanted to do more complicated stuff or multiple things I need to use the IF 
+	
+	IF Comparison_GVL.This_And AND Comparison_GVL.And_This	AND NOT Comparison_GVL.But_NOT_This	AND
+		(Comparison_GVL.This_Or OR Comparison_GVL.Or_This OR NOT Comparison_GVL.Or_NOT_This) THEN
+		Comparison_GVL.Tada	:= TRUE;
+	ELSE
+		Comparison_GVL.Tada	:= FALSE;
+	END_IF
+	
+	Comparison_GVL.OffTimer_TOF(IN:=Comparison_GVL.TurnOFFAfter,PT:= ST_DURATION);
+	Comparison_GVL.OnTimer_TON(IN:=Comparison_GVL.TurnONAfter,PT:= ST_DURATION);
+	Comparison_GVL.PulseTimer_TP(IN:=Comparison_GVL.TurnOnFor,PT:= ChangeTime);
+	JustOncePer(CLK:= Comparison_GVL.PulseTimer_TP.Q);
+	
+	IF JustOncePer.Q THEN
+		CountOnes:= CountOnes+1;
+		Comparison_GVL.TurnOnFor:=FALSE;
+	END_IF
+	IF CountOnes = 5 THEN
+		CountFives:= CountFives +1;
+		CountOnes:=1;
+	END_IF	
+	
+	DoSomething(Counter:= (CountOnes*CountFives) );
+	
+	IF CountFives = 5 THEN
+		CountFives:=1;
+	END_IF	]]></ST>
+    </Implementation>
+    <Method Name="DoSomething" Id="{9372d4a4-4fdc-453f-ab7c-ac838f9d2fbc}">
+      <Declaration><![CDATA[METHOD DoSomething : BOOL
+VAR_INPUT
+	Counter:INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE Counter OF
+	1,10,20:
+		Comparison_GVL.TurnOFFAfter:=TRUE;
+		Comparison_GVL.TurnONAfter:=TRUE;
+		DoSomething:=TRUE;
+	2,11,21:
+		Comparison_GVL.TurnOFFAfter:=FALSE;
+		DoSomething:=TRUE;
+	3:
+		Comparison_GVL.This_And:=TRUE;
+		Comparison_GVL.And_This:=TRUE;
+		DoSomething:=TRUE;
+	5:
+		Comparison_GVL.But_NOT_This:=FALSE;
+		DoSomething:=TRUE;
+	7:
+		Comparison_GVL.This_Or:=TRUE;
+		DoSomething:=TRUE;
+	9,19:
+		Comparison_GVL.TurnONAfter:=FALSE;
+		DoSomething:=TRUE;
+	13:
+		Comparison_GVL.Or_This:=TRUE;
+		DoSomething:=TRUE;
+	15:
+		Comparison_GVL.Or_This:=FALSE;
+		Comparison_GVL.Or_NOT_This:=FALSE;
+		DoSomething:=TRUE;
+	17:
+		Comparison_GVL.This_Or:=FALSE;
+		Comparison_GVL.Or_This:=FALSE;
+		DoSomething:=TRUE;
+	25:
+		AlsoCountTo25:=TRUE;
+	ELSE
+		DoSomething:=FALSE;
+END_CASE
+
+Comparison_GVL.TurnOnFor:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="StructuredText">
+      <LineId Id="9" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="57" Count="1" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="18" Count="2" />
+      <LineId Id="23" Count="1" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="49" Count="1" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="78" Count="0" />
+    </LineIds>
+    <LineIds Name="StructuredText.DoSomething">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="20" Count="2" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="29" Count="1" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="45" Count="1" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="23" Count="1" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="25" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

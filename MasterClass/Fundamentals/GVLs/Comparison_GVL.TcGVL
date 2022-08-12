@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <GVL Name="Comparison_GVL" Id="{2b561b46-9b40-4fb1-9fcc-d169a09728ba}">
+    <Declaration><![CDATA[{attribute 'qualified_only'} 
+VAR_GLOBAL
+	NormallyOpen_NO	: BOOL;
+	NormallyClosed_NC : BOOL;
+	This_And		: BOOL;
+	This_Or			: BOOL;
+	Or_This			: BOOL;
+	Or_NOT_This		: BOOL:=TRUE;
+	But_NOT_This	: BOOL:=TRUE;
+	And_This		: BOOL;
+	Tada			: BOOL;
+	OffTimer_TOF	: TOF;
+	OnTimer_TON		: TON;
+	PulseTimer_TP	: TP;
+	TurnOFFAfter	: BOOL;
+	TurnONAfter		: BOOL;
+	TurnOnFor		: BOOL;
+	DefaultON		: BOOL;
+	DefaultOFF		: BOOL;
+	Countdown		: CTD;
+	
+	CountUP			: CTU;
+	CountTo25		: BOOL;
+END_VAR
+VAR_GLOBAL CONSTANT
+	DURATION		:TIME:=T#15S;
+	SHORT_DURATION	:TIME:=T#5S;
+END_VAR
+]]></Declaration>
+  </GVL>
+</TcPlcObject>

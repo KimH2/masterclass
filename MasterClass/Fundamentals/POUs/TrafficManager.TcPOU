@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="TrafficManager" Id="{f9cd464c-baa3-4ab8-8ab5-576788caeb1f}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM TrafficManager
+VAR
+	FirstAndMain 	:Intersection;
+	SecondAndMain 	:Intersection;
+	FirstAndPine	:Intersection;
+	SecondAndPine	:Intersection;
+	CarSpawner		:TON;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Init" Id="{4af402df-6d40-4d47-9111-d375f8a9ea95}">
+      <Declaration><![CDATA[METHOD Init : BOOL
+VAR_INPUT
+	First, Second, Main, Pine :TrafficDensity;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FirstAndMain.Change_TrafficFlow(TrafficDensity.Low,TrafficDensity.Medium, North, West);
+SecondAndMain.Change_TrafficFlow(TrafficDensity.Medium,TrafficDensity.Medium, North, East);
+
+FirstAndPine.Change_TrafficFlow(TrafficDensity.Low,TrafficDensity.High, South, West);
+SecondAndPine.Change_TrafficFlow(TrafficDensity.Medium,TrafficDensity.High, South, East);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Update" Id="{8e35d2c6-934a-4647-9bfc-9e09ec83a63a}">
+      <Declaration><![CDATA[METHOD Update
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FirstAndMain.UpdateLights();
+SecondAndMain.UpdateLights();
+//			  |						   |
+//---------------<-Main Street->------------------
+//		First |					Second |
+//			  |						   |
+//			  |  					   |
+//----------------<-Pine Street->------------------
+//			  |						   |
+FirstAndPine.UpdateLights();
+SecondAndPine.UpdateLights();
+
+
+UpdateCars();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="UpdateCars" Id="{892be0b6-8b1a-4845-81d2-2c82026e0563}">
+      <Declaration><![CDATA[METHOD UpdateCars : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CarSpawner(IN := NOT CarSpawner.Q, PT := T#1S);
+IF CarSpawner.Q THEN
+	FirstAndMain.CarQueue;
+	SecondAndMain.CarQueue;
+	FirstAndPine.CarQueue;
+	SecondAndPine.CarQueue;
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="TrafficManager">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="TrafficManager.Init">
+      <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="8" Count="0" />
+    </LineIds>
+    <LineIds Name="TrafficManager.Update">
+      <LineId Id="6" Count="1" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="12" Count="3" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="TrafficManager.UpdateCars">
+      <LineId Id="16" Count="1" />
+      <LineId Id="20" Count="2" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

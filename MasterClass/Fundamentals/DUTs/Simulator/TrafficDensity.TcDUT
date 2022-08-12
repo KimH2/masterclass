@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <DUT Name="TrafficDensity" Id="{8d145b45-9b66-456c-9b7a-46cdd9126d44}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE TrafficDensity :
+(
+	None 	:= 0,
+	High	:= 1, //Broadway
+	Medium	:= 5, //Brick Church
+	Low		:= 10 //Fernco
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <DUT Name="Compass" Id="{770dfc56-27fa-4d34-b716-0a0bfa0dd15c}">
+    <Declaration><![CDATA[{attribute 'strict'}
+TYPE Compass :
+(
+	North:= 1,
+	South:= 2,
+	East:= 3,
+	West:= 4
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
