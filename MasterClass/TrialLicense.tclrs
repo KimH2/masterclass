@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<TcLicenseInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2011/11/TcLicenseInfo">
+	<LicenseInfo>
+		<SystemId>{668CE741-C279-F614-DBEA-2CF1098306C0}</SystemId>
+		<IssueTime>2022-08-20T04:14:00</IssueTime>
+		<ExpireTime>2022-08-28T00:00:00</ExpireTime>
+		<LicenseKey>38d7fb7571964a8e59ad193fbca8ee5431547bce5c17d37c5b1e3222ea1f7b3552a5079e64d1f328c05b10baee6be56ff5a3fe5c0ec15f9030ecfb50806d2bada1a0ae3cc80a8ebe5d89a1ef438917af3c73f3e72adfc6ada0e5a406f709a2db634322d30a50a87d72b673dac59465833e779a6697505107f9114238d1d2f67fa3363bf1575b4943839508d3e3fdc74cebd8d81a51288f304b4ed813d10c9de826e25bbcec74871c7e03bd414634ab14f9ff3040ce061826fd14925f37c5c674db8582f7169954f0b55dee54b9a2c99fc71a13e71011275106ca851beabf803accb0bd376bc492a85ea65da94fb9cca599179cfeaa7385989fd1ea6a9b40ab24</LicenseKey>
+		<License>
+			<LicenseId>{304D006A-8299-4560-AB79-438534B50288}</LicenseId>
+			<Name>TC3 C++</Name>
+			<OrderNo>TC1300</OrderNo>
+		</License>
+		<License>
+			<LicenseId>{2D6F11C0-6F75-4E5D-A07D-D83A5E0C9F10}</LicenseId>
+			<Name>Runtime for MATLAB / Simulink</Name>
+			<OrderNo>TF1400</OrderNo>
+		</License>
+		<License>
+			<LicenseId>{AD7F40C3-F160-4413-83E3-6B7656A795A2}</LicenseId>
+			<Name>TC3 C++ / MatSim</Name>
+			<OrderNo>TC1320</OrderNo>
+		</License>
+		<License>
+			<LicenseId>{BDCC0070-42D5-49AE-ABF1-1D4434813D60}</LicenseId>
+			<Name>TC3 OPC-UA</Name>
+			<OrderNo>TF6100</OrderNo>
+		</License>
+		<License>
+			<LicenseId>{4C256767-E6E6-4AF5-BD68-9F7ABAD0C200}</LicenseId>
+			<Name>TC3 ADS</Name>
+			<OrderNo>TC1000</OrderNo>
+		</License>
+		<License>
+			<LicenseId>{66689887-CCBD-452C-AC9A-039D997C6E66}</LicenseId>
+			<Name>TC3 PLC</Name>
+			<OrderNo>TC1200</OrderNo>
+		</License>
+		<License>
+			<LicenseId>{3FF18E97-7754-401B-93FB-70544DE28A13}</LicenseId>
+			<Name>TC3 IO</Name>
+			<OrderNo>TC1100</OrderNo>
+		</License>
+	</LicenseInfo>
+</TcLicenseInfo>

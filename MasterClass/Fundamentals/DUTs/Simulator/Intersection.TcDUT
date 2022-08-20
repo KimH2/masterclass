@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <DUT Name="Intersection" Id="{458a2289-e4c4-4439-9f00-15f27b37d7d5}">
+    <Declaration><![CDATA[TYPE Intersection :
+STRUCT
+	NS_Road: TrafficDensity ;//  Values: None/Low/Medium/High
+	EW_Road: TrafficDensity ;// Values: None/Low/Medium/High
+	
+	//The traffic lights facing each direction (N_Light.Red := True -> turns the red light on for traffic flowing North to South);
+	N_Light: TrafficLight; //.Red .Amber .Green
+	S_Light: TrafficLight; //.Red .Amber .Green
+	W_Light: TrafficLight; //.Red .Amber .Green
+	E_Light: TrafficLight; //.Red .Amber .Green
+	
+	//pedestrian crossing request buttons
+	N_Ped AT %I*: BOOL;
+	S_Ped AT %I*: BOOL;
+	E_Ped AT %I*: BOOL;
+	W_Ped AT %I*: BOOL;
+	
+	//Pedestrian safe to cross indicator (the blue light)
+	N_Cross AT %Q*: BOOL;
+	S_Cross AT %Q*: BOOL;
+	E_Cross AT %Q*: BOOL;
+	W_Cross AT %Q*: BOOL;
+	//Does this direction lead out of the area
+	Exit1, Exit2: Compass; //1-4 N S E W
+	
+	//Stores presense of cars in each direction of the intersection, filled and emptied by the simulation logic
+	CarQueue: ARRAY[1..4] OF INT; //1-4 N S E W
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

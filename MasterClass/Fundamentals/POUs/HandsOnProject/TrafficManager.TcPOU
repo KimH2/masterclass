@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="TrafficManager" Id="{f9cd464c-baa3-4ab8-8ab5-576788caeb1f}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM TrafficManager
+VAR
+Simulator: Cars;
+UpdateLights: Kims_UpdateLights;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Change_TrafficFlow" Id="{34aea9bc-4842-4d51-8488-552182821f60}">
+      <Declaration><![CDATA[METHOD Change_TrafficFlow : BOOL
+VAR_INPUT
+	Intersect: Intersection;
+	NewNS_Density, NewEW_Density: TrafficDensity;
+	Exit1, Exit2: Compass;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Intersect.NS_Road:= NewNS_Density;
+Intersect.EW_Road:= NewEW_Density;
+Intersect.Exit1 := Exit1;
+Intersect.Exit2 := Exit2;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Init" Id="{4af402df-6d40-4d47-9111-d375f8a9ea95}">
+      <Declaration><![CDATA[METHOD Init : BOOL
+VAR_INPUT
+	First, Second, Main, Pine :TrafficDensity;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Change_TrafficFlow(FirstAndMain,TrafficDensity.Low,TrafficDensity.Medium, North, West);
+Change_TrafficFlow(SecondAndMain,TrafficDensity.Medium,TrafficDensity.Medium, North, East);
+
+Change_TrafficFlow(FirstAndPine,TrafficDensity.Low,TrafficDensity.High, South, West);
+Change_TrafficFlow(SecondAndPine,TrafficDensity.Medium,TrafficDensity.High, South, East);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Update" Id="{8e35d2c6-934a-4647-9bfc-9e09ec83a63a}">
+      <Declaration><![CDATA[METHOD Update
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[UpdateLights(Intersect:=FirstAndMain);
+UpdateLights(Intersect:=SecondAndMain);
+//			  |						   |
+//---------------<-Main Street->------------------
+//		First |					Second |
+//			  |						   |
+//			  |  					   |
+//----------------<-Pine Street->------------------
+//			  |						   |
+UpdateLights(Intersect:=FirstAndPine);
+UpdateLights(Intersect:=SecondAndPine);
+
+
+//Below this point I'm just Playing with my Hot Wheels haha//
+Simulator.AddCars(FirstAndMain);
+Simulator.AddCars(SecondAndMain);
+Simulator.AddCars(FirstAndPine);
+Simulator.AddCars(SecondAndPine);
+Simulator.MoveCars(FirstAndMain, SecondAndMain, Compass.East, FirstAndPine, Compass.South);
+Simulator.MoveCars(SecondAndPine, SecondAndMain, Compass.North, FirstAndPine, Compass.West);]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="TrafficManager">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="TrafficManager.Change_TrafficFlow">
+      <LineId Id="6" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="45" Count="1" />
+    </LineIds>
+    <LineIds Name="TrafficManager.Init">
+      <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="8" Count="0" />
+    </LineIds>
+    <LineIds Name="TrafficManager.Update">
+      <LineId Id="22" Count="11" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="36" Count="2" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="39" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

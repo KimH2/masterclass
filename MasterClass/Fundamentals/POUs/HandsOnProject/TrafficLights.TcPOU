@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="TrafficLights" Id="{592c1bb7-9719-48f6-afbd-8153c16e6516}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK TrafficLights
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//This is where all the stuff you guys are going to add will go.
+]]></ST>
+    </Implementation>
+    <LineIds Name="TrafficLights">
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

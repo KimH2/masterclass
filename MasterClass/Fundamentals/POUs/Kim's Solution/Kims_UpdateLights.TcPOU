@@ -1,0 +1,240 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="Kims_UpdateLights" Id="{17a4a239-a718-4f43-ac46-8ffcc4f9c047}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Kims_UpdateLights
+VAR_INPUT
+	Intersect:Intersection;
+	NightMode:BOOL;
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	LightState: (NS_Flow, EW_Flow, NorthOnly, SouthOnly, EastOnly, WestOnly, NS_Night, EW_Night);
+	Transition:(NewLightState,To_Yellow,To_Red,To_Green, Stay_Green);
+	TransitionTimer, FlowTimer,Blinktimer,PedWarning:TON;
+	StayGreenTime:TIME:= T#20S;
+END_VAR
+VAR CONSTANT
+	RED:INT:=0;
+	AMBER:INT:=1;
+	GREEN:INT:=2;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[BlinkTimer(In:= NOT BlinkTimer.Q, PT:=(T#750MS));
+PedWarning(In:= NOT PedWarning.Q, PT:=(T#400MS));
+
+IF NightMode AND Intersect.EW_Road >= Intersect.NS_Road THEN
+	LightState:= EW_Night;
+ELSIF NightMode AND Intersect.EW_Road < Intersect.NS_Road THEN
+	LightState:= NS_Night;
+ELSIF LightState = NS_Flow AND Transition = NewLightState THEN
+	LightState:= EW_Flow;
+	Transition:=To_Yellow;
+ELSIF LightState = EW_Flow AND Transition = NewLightState THEN
+	LightState:= NS_Flow;
+	Transition:=To_Yellow;
+END_IF
+
+
+CASE LightState OF
+	NS_Flow:
+		IF Intersect.N_Ped OR intersect.S_Ped THEN
+			Intersect.N_Cross:=Intersect.N_Ped;
+			Intersect.S_Cross:= intersect.S_Ped;
+			StayGreenTime:= MAX(FlowTimer.ET+T#2S,T#10S) ;
+		END_IF
+		CASE Transition OF
+			To_Yellow:
+				SetLight(Intersect.E_Light,AMBER);
+				SetLight(Intersect.W_Light,AMBER);
+				TransitionTimer(IN:=NOT TransitionTimer.Q,PT:=(T#10S / Intersect.EW_Road));
+				IF TransitionTimer.Q THEN
+				Transition:= To_Red;
+				END_IF;	
+			To_Red:
+				SetLight(Intersect.E_Light,RED);
+				SetLight(Intersect.W_Light,RED);
+				Transition:= To_Green;
+			To_Green:
+				SetLight(Intersect.N_Light,GREEN);
+				SetLight(Intersect.S_Light,GREEN);
+				Transition:= Stay_Green;
+			Stay_Green:
+				FlowTimer(In:= NOT FlowTimer.Q, PT:=(StayGreenTime / Intersect.EW_Road));
+				IF(FlowTimer.PT - FlowTimer.ET < T#5S) THEN
+					IF PedWarning.Q THEN
+						Intersect.E_Cross:=Intersect.W_Cross:= NOT Intersect.E_Cross;
+					END_IF
+				ELSE
+					Intersect.E_Cross:=Intersect.W_Cross:= TRUE;
+				END_IF
+				IF FlowTimer.Q THEN
+				Transition:= NewLightState;
+				END_IF;	
+		END_CASE
+	EW_Flow:
+		IF Intersect.E_Ped OR intersect.W_Ped THEN
+			Intersect.E_Cross:=Intersect.E_Ped;
+			Intersect.W_Cross:= intersect.W_Ped;
+			StayGreenTime:= MAX(FlowTimer.ET+T#2S,T#10S) ;
+		END_IF
+		CASE Transition OF
+			To_Yellow:
+				SetLight(Intersect.N_Light,AMBER);
+				SetLight(Intersect.S_Light,AMBER);
+				TransitionTimer(IN:=NOT TransitionTimer.Q,PT:=(T#10S / Intersect.NS_Road));
+				IF TransitionTimer.Q THEN
+				Transition:= To_Red;
+				END_IF;	
+			To_Red:
+				SetLight(Intersect.N_Light,RED);
+				SetLight(Intersect.S_Light,RED);
+				Transition:= To_Green;
+			To_Green:
+				SetLight(Intersect.E_Light,GREEN);
+				SetLight(Intersect.W_Light,GREEN);
+				Transition:= Stay_Green;
+			Stay_Green:
+				FlowTimer(In:= NOT FlowTimer.Q, PT:=(StayGreenTime / Intersect.EW_Road));
+				IF(FlowTimer.PT - FlowTimer.ET < T#5S) THEN
+					IF PedWarning.Q THEN
+						Intersect.N_Cross:=Intersect.S_Cross:= NOT Intersect.N_Cross;
+					END_IF
+				ELSE
+					Intersect.N_Cross:=Intersect.S_Cross:= TRUE;
+				END_IF
+				IF FlowTimer.Q THEN
+				Transition:= NewLightState;
+				END_IF;	
+		END_CASE
+	NorthOnly:
+	
+	SouthOnly:
+	
+	EastOnly:
+	
+	WestOnly:
+	
+	NS_Night:		
+			;
+			IF BlinkTimer.Q THEN
+			Intersect.N_Light.Amber:=Intersect.S_Light.Amber:= NOT Intersect.N_Light.Amber;
+			Intersect.E_Light.Red:=Intersect.W_Light.Red:= NOT Intersect.E_Light.Red;
+			END_IF;
+			Transition:= NewLightState;
+	EW_Night:
+			
+			IF BlinkTimer.Q THEN
+			Intersect.E_Light.Amber:=Intersect.W_Light.Amber:= NOT Intersect.E_Light.Amber;
+			Intersect.N_Light.Red:=Intersect.S_Light.Red:= NOT Intersect.N_Light.Red;
+			END_IF;
+			Transition:= NewLightState;
+END_CASE
+]]></ST>
+    </Implementation>
+    <Method Name="SetLight" Id="{f45c2384-f701-47b6-aeee-55db2e125d4c}">
+      <Declaration><![CDATA[METHOD SetLight : BOOL
+VAR_INPUT
+	Light: TrafficLight;
+	Setting: INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE Setting OF
+	RED:
+	Light.Red:=TRUE;
+	Light.Amber := Light.Green:= FALSE;
+	AMBER:
+	Light.Amber:=TRUE;
+	Light.Red := Light.Green:= FALSE;
+	GREEN:
+	Light.Green:=TRUE;
+	Light.Amber := Light.Red:= FALSE;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="Kims_UpdateLights">
+      <LineId Id="156" Count="0" />
+      <LineId Id="161" Count="0" />
+      <LineId Id="157" Count="0" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="109" Count="1" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="99" Count="1" />
+      <LineId Id="102" Count="1" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="95" Count="1" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="150" Count="0" />
+      <LineId Id="178" Count="1" />
+      <LineId Id="151" Count="1" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="58" Count="1" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="63" Count="2" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="56" Count="1" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="53" Count="2" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="158" Count="0" />
+      <LineId Id="165" Count="0" />
+      <LineId Id="167" Count="1" />
+      <LineId Id="163" Count="1" />
+      <LineId Id="160" Count="0" />
+      <LineId Id="71" Count="1" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="154" Count="0" />
+      <LineId Id="180" Count="1" />
+      <LineId Id="155" Count="0" />
+      <LineId Id="153" Count="0" />
+      <LineId Id="73" Count="17" />
+      <LineId Id="172" Count="5" />
+      <LineId Id="171" Count="0" />
+      <LineId Id="91" Count="2" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="119" Count="2" />
+      <LineId Id="118" Count="0" />
+      <LineId Id="145" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="117" Count="0" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="146" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="62" Count="0" />
+    </LineIds>
+    <LineIds Name="Kims_UpdateLights.SetLight">
+      <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

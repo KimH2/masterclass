@@ -17,10 +17,10 @@
     <LibraryReferences>{05b06a2e-2038-4c85-9f5f-71aa6d05165a}</LibraryReferences>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DUTs\Simulator\Car.TcDUT">
+    <Compile Include="DUTs\Simulator\Compass.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DUTs\Simulator\Compass.TcDUT">
+    <Compile Include="DUTs\Simulator\Intersection.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DUTs\Simulator\TrafficDensity.TcDUT">
@@ -33,14 +33,23 @@
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
     </Compile>
-    <Compile Include="GVLs\HMI.TcGVL">
+    <Compile Include="GVLs\Traffic_GVL.TcGVL">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
     </Compile>
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\Intersection.TcPOU">
+    <Compile Include="POUs\HandsOnProject\Cars.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\HandsOnProject\TrafficManager.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\HandsOnProject\TrafficLights.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\Kim%27s Solution\Kims_UpdateLights.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\Ladder.TcPOU">
@@ -52,14 +61,13 @@
     <Compile Include="POUs\StructuredText.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\TrafficManager.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DUTs" />
     <Folder Include="DUTs\Simulator" />
     <Folder Include="GVLs" />
+    <Folder Include="POUs\HandsOnProject" />
+    <Folder Include="POUs\Kim%27s Solution" />
     <Folder Include="VISUs" />
     <Folder Include="POUs" />
   </ItemGroup>
@@ -71,6 +79,10 @@
     <PlaceholderReference Include="Tc2_System">
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_Utilities">
+      <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_Utilities</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <GVL Name="Traffic_GVL" Id="{8b57eb25-a288-418b-86ee-66440a9a4493}">
+    <Declaration><![CDATA[VAR_GLOBAL
+	FirstAndMain 	:Intersection;
+	SecondAndMain 	:Intersection;
+	FirstAndPine	:Intersection;
+	SecondAndPine	:Intersection;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

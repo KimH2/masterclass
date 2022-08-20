@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="Cars" Id="{8c754437-3bf9-4cab-b527-78ab6d91a306}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Cars
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	CarSpawner		:TON;
+	SpawnRate		:INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+]]></ST>
+    </Implementation>
+    <Method Name="AddCars" Id="{e69bf0a2-ed1c-4baf-932d-e74342522d0e}">
+      <Declaration><![CDATA[METHOD AddCars : BOOL
+VAR_INPUT
+	Intersect:Intersection;
+END_VAR
+VAR
+	Frequency: TIME := T#1S;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CarSpawner(IN := NOT CarSpawner.Q, PT := Frequency);
+IF CarSpawner.Q THEN
+	SpawnRate:=SpawnRate+1;
+	CASE Intersect.Exit1 OF
+		North, South:
+			IF SpawnRate MOD Intersect.NS_Road = 0 THEN
+				Intersect.CarQueue[Intersect.Exit1]:= Intersect.CarQueue[Intersect.Exit1] +1;
+			END_IF		
+		East, West:
+			IF SpawnRate MOD Intersect.EW_Road = 0 THEN
+				Intersect.CarQueue[Intersect.Exit1]:= Intersect.CarQueue[Intersect.Exit1] +1;
+			END_IF
+	END_CASE
+	IF NOT (Intersect.Exit2 = Intersect.Exit1) THEN
+		CASE Intersect.Exit2 OF	
+		North, South:
+			IF SpawnRate MOD Intersect.NS_Road = 0 THEN
+				Intersect.CarQueue[Intersect.Exit2]:= Intersect.CarQueue[Intersect.Exit2] +1;
+			END_IF		
+		East, West:
+			IF SpawnRate MOD Intersect.EW_Road = 0 THEN
+				Intersect.CarQueue[Intersect.Exit2]:= Intersect.CarQueue[Intersect.Exit2] +1;
+			END_IF
+		END_CASE	
+	END_IF
+
+END_IF
+IF SpawnRate = 10 THEN
+	SpawnRate :=0;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="MoveCars" Id="{a98425d6-2ebe-4022-afc5-b02ca50edc65}">
+      <Declaration><![CDATA[METHOD MoveCars : BOOL
+VAR_INPUT
+	To_Intersect, From_A: Intersection;
+	Direction_A: Compass;
+	From_B: Intersection;
+ 	Direction_B: Compass;	
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//The traffic lights are facing each direction (N_Light.Red := True -> turns the red light facing north on stopping traffic flowing North to South);
+IF CarSpawner.Q THEN
+	CASE Direction_A OF
+	North:
+		IF From_A.N_Light.Green = TRUE AND From_A.CarQueue[North]>0 THEN
+			From_A.CarQueue[North]:= From_A.CarQueue[North] - 1;
+			To_Intersect.CarQueue[North]:= To_Intersect.CarQueue[North] + 1;
+		END_IF
+		IF To_Intersect.S_Light.Green = TRUE AND To_Intersect.CarQueue[South]>0 THEN
+			From_A.CarQueue[South]:= From_A.CarQueue[South] + 1;
+			To_Intersect.CarQueue[South]:= To_Intersect.CarQueue[South] - 1;
+		END_IF
+	South:
+		IF From_A.S_Light.Green = TRUE AND From_A.CarQueue[South]>0 THEN
+			From_A.CarQueue[South]:= From_A.CarQueue[South] - 1;
+			To_Intersect.CarQueue[South]:= To_Intersect.CarQueue[South] + 1;
+		END_IF
+		IF To_Intersect.N_Light.Green = TRUE AND To_Intersect.CarQueue[North]>0 THEN
+			From_A.CarQueue[North]:= From_A.CarQueue[North] + 1;
+			To_Intersect.CarQueue[North]:= To_Intersect.CarQueue[North] - 1;
+		END_IF
+	East:
+		IF From_A.E_Light.Green = TRUE AND From_A.CarQueue[East]>0 THEN
+			From_A.CarQueue[East]:= From_A.CarQueue[East] - 1;
+			To_Intersect.CarQueue[East]:= To_Intersect.CarQueue[East] + 1;
+		END_IF
+		IF To_Intersect.W_Light.Green = TRUE AND To_Intersect.CarQueue[West]>0 THEN
+			From_A.CarQueue[West]:= From_A.CarQueue[West] + 1;
+			To_Intersect.CarQueue[West]:= To_Intersect.CarQueue[West] - 1;
+		END_IF
+	West:
+		IF From_A.W_Light.Green = TRUE AND From_A.CarQueue[West]>0 THEN
+			From_A.CarQueue[West]:= From_A.CarQueue[West] - 1;
+			To_Intersect.CarQueue[West]:= To_Intersect.CarQueue[West] + 1;
+		END_IF
+		IF To_Intersect.E_Light.Green = TRUE AND To_Intersect.CarQueue[East]>0 THEN
+			From_A.CarQueue[East]:= From_A.CarQueue[East] + 1;
+			To_Intersect.CarQueue[East]:= To_Intersect.CarQueue[East] - 1;
+		END_IF
+	END_CASE
+	CASE Direction_B OF
+		North:
+		IF From_B.N_Light.Green = TRUE AND From_B.CarQueue[North]>0 THEN
+			From_B.CarQueue[North]:= From_B.CarQueue[North] - 1;
+			To_Intersect.CarQueue[North]:= To_Intersect.CarQueue[North] + 1;
+		END_IF
+		IF To_Intersect.S_Light.Green = TRUE AND To_Intersect.CarQueue[South]>0 THEN
+			From_B.CarQueue[South]:= From_B.CarQueue[South] + 1;
+			To_Intersect.CarQueue[South]:= To_Intersect.CarQueue[South] - 1;
+		END_IF
+	South:
+		IF From_B.S_Light.Green = TRUE AND From_B.CarQueue[South]>0 THEN
+			From_B.CarQueue[South]:= From_B.CarQueue[South] - 1;
+			To_Intersect.CarQueue[South]:= To_Intersect.CarQueue[South] + 1;
+		END_IF
+		IF To_Intersect.N_Light.Green = TRUE AND To_Intersect.CarQueue[North]>0 THEN
+			From_B.CarQueue[North]:= From_B.CarQueue[North] + 1;
+			To_Intersect.CarQueue[North]:= To_Intersect.CarQueue[North] - 1;
+		END_IF
+	East:
+		IF From_B.E_Light.Green = TRUE AND From_B.CarQueue[East]>0 THEN
+			From_B.CarQueue[East]:= From_B.CarQueue[East] - 1;
+			To_Intersect.CarQueue[East]:= To_Intersect.CarQueue[East] + 1;
+		END_IF
+		IF To_Intersect.W_Light.Green = TRUE AND To_Intersect.CarQueue[West]>0 THEN
+			From_B.CarQueue[West]:= From_B.CarQueue[West] + 1;
+			To_Intersect.CarQueue[West]:= To_Intersect.CarQueue[West] - 1;
+		END_IF
+	West:
+		IF From_B.W_Light.Green = TRUE AND From_B.CarQueue[West]>0 THEN
+			From_B.CarQueue[West]:= From_B.CarQueue[West] - 1;
+			To_Intersect.CarQueue[West]:= To_Intersect.CarQueue[West] + 1;
+		END_IF
+		IF To_Intersect.E_Light.Green = TRUE AND To_Intersect.CarQueue[East]>0 THEN
+			From_B.CarQueue[East]:= From_B.CarQueue[East] + 1;
+			To_Intersect.CarQueue[East]:= To_Intersect.CarQueue[East] - 1;
+		END_IF
+	END_CASE
+	
+	
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="Cars">
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="Cars.AddCars">
+      <LineId Id="53" Count="0" />
+      <LineId Id="6" Count="1" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="23" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="44" Count="8" />
+      <LineId Id="42" Count="1" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="38" Count="2" />
+    </LineIds>
+    <LineIds Name="Cars.MoveCars">
+      <LineId Id="11" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="29" Count="2" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="72" Count="2" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="39" Count="2" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="76" Count="2" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="43" Count="2" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="80" Count="2" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="47" Count="2" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="84" Count="2" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="87" Count="35" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="123" Count="1" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="13" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
