@@ -3,27 +3,39 @@
   <POU Name="MAIN" Id="{b666fc23-fe06-4f53-8f48-ffbc045e9268}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-	PlayInTraffic:BOOL:=FALSE;
+	ClimbTheRungs, MoveOnToCode, PlayInTraffic, RunOnce:BOOL:=FALSE;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[// <- this is how you comment out lines, anything after the // will not be part of the program 
 //this is how you can leave notes for future developers or if code isn't working right you can remove it temporarily to test things without deleting it  
-Ladder(); //This calls the ladder logic example
-StructuredText(); //This calls the structured text example
 
-IF PlayInTraffic THEN
-	TrafficManager();
+
+IF ClimbTheRungs THEN
+	Ladder(); //This calls the ladder logic example
+ELSIF MoveOnToCode THEN
+StructuredText(); //This calls the structured text example
+ELSIF PlayInTraffic THEN
+	IF NOT RunOnce THEN
+	TrafficManager.Init();
+	runOnce:=TRUE;
+END_IF
+TrafficManager.Update();
+ELSE
+	//What you were expecting more?
 END_IF
 ]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="7" Count="1" />
-      <LineId Id="2" Count="0" />
+      <LineId Id="22" Count="1" />
+      <LineId Id="25" Count="2" />
       <LineId Id="6" Count="0" />
-      <LineId Id="15" Count="0" />
       <LineId Id="14" Count="0" />
-      <LineId Id="16" Count="1" />
+      <LineId Id="31" Count="3" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="29" Count="1" />
+      <LineId Id="17" Count="0" />
       <LineId Id="13" Count="0" />
     </LineIds>
   </POU>

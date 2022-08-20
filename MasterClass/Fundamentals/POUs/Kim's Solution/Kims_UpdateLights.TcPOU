@@ -3,7 +3,7 @@
   <POU Name="Kims_UpdateLights" Id="{17a4a239-a718-4f43-ac46-8ffcc4f9c047}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK Kims_UpdateLights
 VAR_INPUT
-	Intersect:Intersection;
+	Intersect:POINTER TO Intersection;
 	NightMode:BOOL;
 END_VAR
 VAR_OUTPUT
@@ -12,7 +12,7 @@ VAR
 	LightState: (NS_Flow, EW_Flow, NorthOnly, SouthOnly, EastOnly, WestOnly, NS_Night, EW_Night);
 	Transition:(NewLightState,To_Yellow,To_Red,To_Green, Stay_Green);
 	TransitionTimer, FlowTimer,Blinktimer,PedWarning:TON;
-	StayGreenTime:TIME:= T#20S;
+	StayGreenTime:TIME:= T#40S;
 END_VAR
 VAR CONSTANT
 	RED:INT:=0;
@@ -20,12 +20,12 @@ VAR CONSTANT
 	GREEN:INT:=2;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[BlinkTimer(In:= NOT BlinkTimer.Q, PT:=(T#750MS));
-PedWarning(In:= NOT PedWarning.Q, PT:=(T#400MS));
+      <ST><![CDATA[BlinkTimer(In:= NOT BlinkTimer.Q, PT:=(T#1S));
+PedWarning(In:= NOT PedWarning.Q, PT:=(T#1S));
 
-IF NightMode AND Intersect.EW_Road >= Intersect.NS_Road THEN
+IF NightMode AND Intersect^.EW_Road >= Intersect^.NS_Road THEN
 	LightState:= EW_Night;
-ELSIF NightMode AND Intersect.EW_Road < Intersect.NS_Road THEN
+ELSIF NightMode AND Intersect^.EW_Road < Intersect^.NS_Road THEN
 	LightState:= NS_Night;
 ELSIF LightState = NS_Flow AND Transition = NewLightState THEN
 	LightState:= EW_Flow;
@@ -38,70 +38,96 @@ END_IF
 
 CASE LightState OF
 	NS_Flow:
-		IF Intersect.N_Ped OR intersect.S_Ped THEN
-			Intersect.N_Cross:=Intersect.N_Ped;
-			Intersect.S_Cross:= intersect.S_Ped;
+		IF Intersect^.N_Ped OR Intersect^.S_Ped THEN
+			Intersect^.N_Cross:=Intersect^.N_Ped;
+			Intersect^.S_Cross:= Intersect^.S_Ped;
 			StayGreenTime:= MAX(FlowTimer.ET+T#2S,T#10S) ;
 		END_IF
 		CASE Transition OF
 			To_Yellow:
-				SetLight(Intersect.E_Light,AMBER);
-				SetLight(Intersect.W_Light,AMBER);
-				TransitionTimer(IN:=NOT TransitionTimer.Q,PT:=(T#10S / Intersect.EW_Road));
+				Intersect^.E_Light.Amber:=TRUE;
+				Intersect^.E_Light.Red := Intersect^.E_Light.Green:= FALSE;
+				Intersect^.W_Light.Amber:=TRUE;
+				Intersect^.W_Light.Red := Intersect^.W_Light.Green:= FALSE;
+				TransitionTimer(IN:=NOT TransitionTimer.Q,PT:=(T#20S / Intersect^.EW_Road));
 				IF TransitionTimer.Q THEN
 				Transition:= To_Red;
 				END_IF;	
 			To_Red:
-				SetLight(Intersect.E_Light,RED);
-				SetLight(Intersect.W_Light,RED);
+				Intersect^.E_Light.Red:=TRUE;
+				Intersect^.E_Light.Amber := Intersect^.E_Light.Green:= FALSE;
+				Intersect^.W_Light.Red:=TRUE;
+				Intersect^.W_Light.Amber := Intersect^.W_Light.Green:= FALSE;
+				TransitionTimer(IN:=NOT TransitionTimer.Q,PT:=(T#5S / Intersect^.EW_Road));
+				IF TransitionTimer.Q THEN
 				Transition:= To_Green;
+				END_IF;
 			To_Green:
-				SetLight(Intersect.N_Light,GREEN);
-				SetLight(Intersect.S_Light,GREEN);
+				Intersect^.N_Light.Green:=TRUE;
+				Intersect^.N_Light.Red := Intersect^.N_Light.Amber:= FALSE;
+				Intersect^.S_Light.Green:=TRUE;
+				Intersect^.S_Light.Red := Intersect^.S_Light.Amber:= FALSE;
+				TransitionTimer(IN:=NOT TransitionTimer.Q,PT:=(T#2S));
+				IF TransitionTimer.Q THEN
 				Transition:= Stay_Green;
+				END_IF;	
 			Stay_Green:
-				FlowTimer(In:= NOT FlowTimer.Q, PT:=(StayGreenTime / Intersect.EW_Road));
+				FlowTimer(In:= NOT FlowTimer.Q, PT:=(StayGreenTime / Intersect^.EW_Road));
 				IF(FlowTimer.PT - FlowTimer.ET < T#5S) THEN
 					IF PedWarning.Q THEN
-						Intersect.E_Cross:=Intersect.W_Cross:= NOT Intersect.E_Cross;
+						Intersect^.E_Cross:=Intersect^.W_Cross:= NOT Intersect^.E_Cross;
 					END_IF
 				ELSE
-					Intersect.E_Cross:=Intersect.W_Cross:= TRUE;
+					Intersect^.E_Cross:=Intersect^.W_Cross:= TRUE;
 				END_IF
 				IF FlowTimer.Q THEN
 				Transition:= NewLightState;
 				END_IF;	
 		END_CASE
 	EW_Flow:
-		IF Intersect.E_Ped OR intersect.W_Ped THEN
-			Intersect.E_Cross:=Intersect.E_Ped;
-			Intersect.W_Cross:= intersect.W_Ped;
+		IF Intersect^.E_Ped OR Intersect^.W_Ped THEN
+			Intersect^.E_Cross:=Intersect^.E_Ped;
+			Intersect^.W_Cross:= Intersect^.W_Ped;
 			StayGreenTime:= MAX(FlowTimer.ET+T#2S,T#10S) ;
 		END_IF
 		CASE Transition OF
 			To_Yellow:
-				SetLight(Intersect.N_Light,AMBER);
-				SetLight(Intersect.S_Light,AMBER);
-				TransitionTimer(IN:=NOT TransitionTimer.Q,PT:=(T#10S / Intersect.NS_Road));
+				Intersect^.N_Light.Amber:=TRUE;
+				Intersect^.N_Light.Red := Intersect^.N_Light.Green:= FALSE;
+				Intersect^.S_Light.Amber:=TRUE;
+				Intersect^.S_Light.Red := Intersect^.S_Light.Green:= FALSE;
+				TransitionTimer(IN:=NOT TransitionTimer.Q,PT:=(T#20S / Intersect^.NS_Road));
 				IF TransitionTimer.Q THEN
 				Transition:= To_Red;
 				END_IF;	
 			To_Red:
-				SetLight(Intersect.N_Light,RED);
-				SetLight(Intersect.S_Light,RED);
+				Intersect^.N_Light.Red:=TRUE;
+				Intersect^.N_Light.Amber := Intersect^.N_Light.Green:= FALSE;
+				Intersect^.S_Light.Red:=TRUE;
+				Intersect^.S_Light.Amber:= Intersect^.S_Light.Green:= FALSE;
+				TransitionTimer(IN:=NOT TransitionTimer.Q,PT:=(T#5S / Intersect^.NS_Road));
+				IF TransitionTimer.Q THEN
 				Transition:= To_Green;
+				END_IF;
 			To_Green:
-				SetLight(Intersect.E_Light,GREEN);
-				SetLight(Intersect.W_Light,GREEN);
+				Intersect^.E_Light.Green:=TRUE;
+				Intersect^.E_Light.Red := Intersect^.E_Light.Amber:= FALSE;
+				Intersect^.W_Light.Green:=TRUE;
+				Intersect^.W_Light.Red := Intersect^.W_Light.Amber:= FALSE;
+				TransitionTimer(IN:=NOT TransitionTimer.Q,PT:=(T#2S));
+				IF TransitionTimer.Q THEN
 				Transition:= Stay_Green;
+				END_IF;				
+
+Transition:= Stay_Green;
 			Stay_Green:
-				FlowTimer(In:= NOT FlowTimer.Q, PT:=(StayGreenTime / Intersect.EW_Road));
+				FlowTimer(In:= NOT FlowTimer.Q, PT:=(StayGreenTime / Intersect^.EW_Road));
 				IF(FlowTimer.PT - FlowTimer.ET < T#5S) THEN
 					IF PedWarning.Q THEN
-						Intersect.N_Cross:=Intersect.S_Cross:= NOT Intersect.N_Cross;
+						Intersect^.N_Cross:=Intersect^.S_Cross:= NOT Intersect^.N_Cross;
 					END_IF
 				ELSE
-					Intersect.N_Cross:=Intersect.S_Cross:= TRUE;
+					Intersect^.N_Cross:=Intersect^.S_Cross:= TRUE;
 				END_IF
 				IF FlowTimer.Q THEN
 				Transition:= NewLightState;
@@ -118,15 +144,15 @@ CASE LightState OF
 	NS_Night:		
 			;
 			IF BlinkTimer.Q THEN
-			Intersect.N_Light.Amber:=Intersect.S_Light.Amber:= NOT Intersect.N_Light.Amber;
-			Intersect.E_Light.Red:=Intersect.W_Light.Red:= NOT Intersect.E_Light.Red;
+			Intersect^.N_Light.Amber:=Intersect^.S_Light.Amber:= NOT Intersect^.N_Light.Amber;
+			Intersect^.E_Light.Red:=Intersect^.W_Light.Red:= NOT Intersect^.E_Light.Red;
 			END_IF;
 			Transition:= NewLightState;
 	EW_Night:
 			
 			IF BlinkTimer.Q THEN
-			Intersect.E_Light.Amber:=Intersect.W_Light.Amber:= NOT Intersect.E_Light.Amber;
-			Intersect.N_Light.Red:=Intersect.S_Light.Red:= NOT Intersect.N_Light.Red;
+			Intersect^.E_Light.Amber:=Intersect^.W_Light.Amber:= NOT Intersect^.E_Light.Amber;
+			Intersect^.N_Light.Red:=Intersect^.S_Light.Red:= NOT Intersect^.N_Light.Red;
 			END_IF;
 			Transition:= NewLightState;
 END_CASE
@@ -135,21 +161,21 @@ END_CASE
     <Method Name="SetLight" Id="{f45c2384-f701-47b6-aeee-55db2e125d4c}">
       <Declaration><![CDATA[METHOD SetLight : BOOL
 VAR_INPUT
-	Light: TrafficLight;
+	Light: POINTER TO TrafficLight;
 	Setting: INT;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE Setting OF
 	RED:
-	Light.Red:=TRUE;
-	Light.Amber := Light.Green:= FALSE;
+	Light^.Red:=TRUE;
+	Light^.Amber := Light^.Green:= FALSE;
 	AMBER:
-	Light.Amber:=TRUE;
-	Light.Red := Light.Green:= FALSE;
+	Light^.Amber:=TRUE;
+	Light^.Red := Light^.Green:= FALSE;
 	GREEN:
-	Light.Green:=TRUE;
-	Light.Amber := Light.Red:= FALSE;
+	Light^.Green:=TRUE;
+	Light^.Amber := Light^.Red:= FALSE;
 END_CASE]]></ST>
       </Implementation>
     </Method>
@@ -172,13 +198,21 @@ END_CASE]]></ST>
       <LineId Id="151" Count="1" />
       <LineId Id="34" Count="0" />
       <LineId Id="50" Count="0" />
-      <LineId Id="58" Count="1" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="199" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="200" Count="0" />
       <LineId Id="61" Count="0" />
       <LineId Id="63" Count="2" />
       <LineId Id="52" Count="0" />
-      <LineId Id="56" Count="1" />
+      <LineId Id="201" Count="2" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="220" Count="2" />
       <LineId Id="66" Count="0" />
-      <LineId Id="53" Count="2" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="204" Count="2" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="231" Count="2" />
       <LineId Id="69" Count="0" />
       <LineId Id="67" Count="0" />
       <LineId Id="70" Count="0" />
@@ -195,7 +229,23 @@ END_CASE]]></ST>
       <LineId Id="180" Count="1" />
       <LineId Id="155" Count="0" />
       <LineId Id="153" Count="0" />
-      <LineId Id="73" Count="17" />
+      <LineId Id="73" Count="1" />
+      <LineId Id="211" Count="2" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="77" Count="4" />
+      <LineId Id="214" Count="2" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="223" Count="1" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="225" Count="0" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="217" Count="2" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="228" Count="2" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="227" Count="0" />
+      <LineId Id="226" Count="0" />
+      <LineId Id="89" Count="1" />
       <LineId Id="172" Count="5" />
       <LineId Id="171" Count="0" />
       <LineId Id="91" Count="2" />

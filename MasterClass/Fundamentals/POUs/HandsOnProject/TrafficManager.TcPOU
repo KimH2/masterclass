@@ -5,6 +5,7 @@
 VAR
 Simulator: Cars;
 UpdateLights: Kims_UpdateLights;
+runOnce:BOOL:=FALSE;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -13,31 +14,35 @@ END_VAR
     <Method Name="Change_TrafficFlow" Id="{34aea9bc-4842-4d51-8488-552182821f60}">
       <Declaration><![CDATA[METHOD Change_TrafficFlow : BOOL
 VAR_INPUT
-	Intersect: Intersection;
+	Intersect: POINTER to Intersection;
 	NewNS_Density, NewEW_Density: TrafficDensity;
 	Exit1, Exit2: Compass;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Intersect.NS_Road:= NewNS_Density;
-Intersect.EW_Road:= NewEW_Density;
-Intersect.Exit1 := Exit1;
-Intersect.Exit2 := Exit2;
+        <ST><![CDATA[Intersect^.NS_Road:= NewNS_Density;
+Intersect^.EW_Road:= NewEW_Density;
+Intersect^.Exit1 := Exit1;
+Intersect^.Exit2 := Exit2;
 ]]></ST>
       </Implementation>
     </Method>
     <Method Name="Init" Id="{4af402df-6d40-4d47-9111-d375f8a9ea95}">
       <Declaration><![CDATA[METHOD Init : BOOL
 VAR_INPUT
-	First, Second, Main, Pine :TrafficDensity;
+	//First, Second, Main, Pine :TrafficDensity;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Change_TrafficFlow(FirstAndMain,TrafficDensity.Low,TrafficDensity.Medium, North, West);
-Change_TrafficFlow(SecondAndMain,TrafficDensity.Medium,TrafficDensity.Medium, North, East);
+        <ST><![CDATA[//FirstAndMain.NS_Road:=TrafficDensity.Low;
+//FirstAndMain.EW_Road:=TrafficDensity.Medium;
+//FirstAndMain.Exit1:= North;
+//FirstAndMain.Exit2:= West;
+Change_TrafficFlow(ADR(FirstAndMain),TrafficDensity.Low,TrafficDensity.Medium, North, West);
+Change_TrafficFlow(ADR(SecondAndMain),TrafficDensity.Medium,TrafficDensity.Medium, North, East);
 
-Change_TrafficFlow(FirstAndPine,TrafficDensity.Low,TrafficDensity.High, South, West);
-Change_TrafficFlow(SecondAndPine,TrafficDensity.Medium,TrafficDensity.High, South, East);
+Change_TrafficFlow(ADR(FirstAndPine),TrafficDensity.Low,TrafficDensity.High, South, West);
+Change_TrafficFlow(ADR(SecondAndPine),TrafficDensity.Medium,TrafficDensity.High, South, East);
 ]]></ST>
       </Implementation>
     </Method>
@@ -47,8 +52,8 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[UpdateLights(Intersect:=FirstAndMain);
-UpdateLights(Intersect:=SecondAndMain);
+        <ST><![CDATA[UpdateLights(Intersect:=ADR(FirstAndMain));
+UpdateLights(Intersect:=ADR(SecondAndMain));
 //			  |						   |
 //---------------<-Main Street->------------------
 //		First |					Second |
@@ -56,21 +61,21 @@ UpdateLights(Intersect:=SecondAndMain);
 //			  |  					   |
 //----------------<-Pine Street->------------------
 //			  |						   |
-UpdateLights(Intersect:=FirstAndPine);
-UpdateLights(Intersect:=SecondAndPine);
+UpdateLights(Intersect:=ADR(FirstAndPine));
+UpdateLights(Intersect:=ADR(SecondAndPine));
 
 
 //Below this point I'm just Playing with my Hot Wheels haha//
-Simulator.AddCars(FirstAndMain);
-Simulator.AddCars(SecondAndMain);
-Simulator.AddCars(FirstAndPine);
-Simulator.AddCars(SecondAndPine);
-Simulator.MoveCars(FirstAndMain, SecondAndMain, Compass.East, FirstAndPine, Compass.South);
-Simulator.MoveCars(SecondAndPine, SecondAndMain, Compass.North, FirstAndPine, Compass.West);]]></ST>
+Simulator.AddCars(ADR(FirstAndMain));
+Simulator.AddCars(ADR(SecondAndMain));
+Simulator.AddCars(ADR(FirstAndPine));
+Simulator.AddCars(ADR(SecondAndPine));
+Simulator.MoveCars(ADR(FirstAndMain), ADR(SecondAndMain), Compass.East, ADR(FirstAndPine), Compass.South);
+Simulator.MoveCars(ADR(SecondAndPine), ADR(SecondAndMain), Compass.North, ADR(FirstAndPine), Compass.West);]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="TrafficManager">
-      <LineId Id="5" Count="0" />
+      <LineId Id="15" Count="0" />
     </LineIds>
     <LineIds Name="TrafficManager.Change_TrafficFlow">
       <LineId Id="6" Count="0" />
@@ -80,6 +85,7 @@ Simulator.MoveCars(SecondAndPine, SecondAndMain, Compass.North, FirstAndPine, Co
     </LineIds>
     <LineIds Name="TrafficManager.Init">
       <LineId Id="5" Count="0" />
+      <LineId Id="23" Count="3" />
       <LineId Id="11" Count="0" />
       <LineId Id="18" Count="0" />
       <LineId Id="13" Count="0" />

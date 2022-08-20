@@ -18,7 +18,7 @@ END_VAR
     <Method Name="AddCars" Id="{e69bf0a2-ed1c-4baf-932d-e74342522d0e}">
       <Declaration><![CDATA[METHOD AddCars : BOOL
 VAR_INPUT
-	Intersect:Intersection;
+	Intersect:POINTER TO Intersection;
 END_VAR
 VAR
 	Frequency: TIME := T#1S;
@@ -27,25 +27,25 @@ END_VAR]]></Declaration>
         <ST><![CDATA[CarSpawner(IN := NOT CarSpawner.Q, PT := Frequency);
 IF CarSpawner.Q THEN
 	SpawnRate:=SpawnRate+1;
-	CASE Intersect.Exit1 OF
+	CASE Intersect^.Exit1 OF
 		North, South:
-			IF SpawnRate MOD Intersect.NS_Road = 0 THEN
-				Intersect.CarQueue[Intersect.Exit1]:= Intersect.CarQueue[Intersect.Exit1] +1;
+			IF SpawnRate MOD Intersect^.NS_Road = 0 THEN
+				Intersect^.CarQueue[Intersect^.Exit1]:= Intersect^.CarQueue[Intersect^.Exit1] +1;
 			END_IF		
 		East, West:
-			IF SpawnRate MOD Intersect.EW_Road = 0 THEN
-				Intersect.CarQueue[Intersect.Exit1]:= Intersect.CarQueue[Intersect.Exit1] +1;
+			IF SpawnRate MOD Intersect^.EW_Road = 0 THEN
+				Intersect^.CarQueue[Intersect^.Exit1]:= Intersect^.CarQueue[Intersect^.Exit1] +1;
 			END_IF
 	END_CASE
-	IF NOT (Intersect.Exit2 = Intersect.Exit1) THEN
-		CASE Intersect.Exit2 OF	
+	IF NOT (Intersect^.Exit2 = Intersect^.Exit1) THEN
+		CASE Intersect^.Exit2 OF	
 		North, South:
-			IF SpawnRate MOD Intersect.NS_Road = 0 THEN
-				Intersect.CarQueue[Intersect.Exit2]:= Intersect.CarQueue[Intersect.Exit2] +1;
+			IF SpawnRate MOD Intersect^.NS_Road = 0 THEN
+				Intersect^.CarQueue[Intersect^.Exit2]:= Intersect^.CarQueue[Intersect^.Exit2] +1;
 			END_IF		
 		East, West:
-			IF SpawnRate MOD Intersect.EW_Road = 0 THEN
-				Intersect.CarQueue[Intersect.Exit2]:= Intersect.CarQueue[Intersect.Exit2] +1;
+			IF SpawnRate MOD Intersect^.EW_Road = 0 THEN
+				Intersect^.CarQueue[Intersect^.Exit2]:= Intersect^.CarQueue[Intersect^.Exit2] +1;
 			END_IF
 		END_CASE	
 	END_IF
@@ -59,9 +59,9 @@ END_IF]]></ST>
     <Method Name="MoveCars" Id="{a98425d6-2ebe-4022-afc5-b02ca50edc65}">
       <Declaration><![CDATA[METHOD MoveCars : BOOL
 VAR_INPUT
-	To_Intersect, From_A: Intersection;
+	To_Intersect, From_A: POINTER TO Intersection;
 	Direction_A: Compass;
-	From_B: Intersection;
+	From_B: POINTER TO Intersection;
  	Direction_B: Compass;	
 END_VAR
 ]]></Declaration>
@@ -70,78 +70,78 @@ END_VAR
 IF CarSpawner.Q THEN
 	CASE Direction_A OF
 	North:
-		IF From_A.N_Light.Green = TRUE AND From_A.CarQueue[North]>0 THEN
-			From_A.CarQueue[North]:= From_A.CarQueue[North] - 1;
-			To_Intersect.CarQueue[North]:= To_Intersect.CarQueue[North] + 1;
+		IF From_A^.N_Light.Green = TRUE AND From_A^.CarQueue[North]>0 THEN
+			From_A^.CarQueue[North]:= From_A^.CarQueue[North] - 1;
+			To_Intersect^.CarQueue[North]:= To_Intersect^.CarQueue[North] + 1;
 		END_IF
-		IF To_Intersect.S_Light.Green = TRUE AND To_Intersect.CarQueue[South]>0 THEN
-			From_A.CarQueue[South]:= From_A.CarQueue[South] + 1;
-			To_Intersect.CarQueue[South]:= To_Intersect.CarQueue[South] - 1;
+		IF To_Intersect^.S_Light.Green = TRUE AND To_Intersect^.CarQueue[South]>0 THEN
+			From_A^.CarQueue[South]:= From_A^.CarQueue[South] + 1;
+			To_Intersect^.CarQueue[South]:= To_Intersect^.CarQueue[South] - 1;
 		END_IF
 	South:
-		IF From_A.S_Light.Green = TRUE AND From_A.CarQueue[South]>0 THEN
-			From_A.CarQueue[South]:= From_A.CarQueue[South] - 1;
-			To_Intersect.CarQueue[South]:= To_Intersect.CarQueue[South] + 1;
+		IF From_A^.S_Light.Green = TRUE AND From_A^.CarQueue[South]>0 THEN
+			From_A^.CarQueue[South]:= From_A^.CarQueue[South] - 1;
+			To_Intersect^.CarQueue[South]:= To_Intersect^.CarQueue[South] + 1;
 		END_IF
-		IF To_Intersect.N_Light.Green = TRUE AND To_Intersect.CarQueue[North]>0 THEN
-			From_A.CarQueue[North]:= From_A.CarQueue[North] + 1;
-			To_Intersect.CarQueue[North]:= To_Intersect.CarQueue[North] - 1;
+		IF To_Intersect^.N_Light.Green = TRUE AND To_Intersect^.CarQueue[North]>0 THEN
+			From_A^.CarQueue[North]:= From_A^.CarQueue[North] + 1;
+			To_Intersect^.CarQueue[North]:= To_Intersect^.CarQueue[North] - 1;
 		END_IF
 	East:
-		IF From_A.E_Light.Green = TRUE AND From_A.CarQueue[East]>0 THEN
-			From_A.CarQueue[East]:= From_A.CarQueue[East] - 1;
-			To_Intersect.CarQueue[East]:= To_Intersect.CarQueue[East] + 1;
+		IF From_A^.E_Light.Green = TRUE AND From_A^.CarQueue[East]>0 THEN
+			From_A^.CarQueue[East]:= From_A^.CarQueue[East] - 1;
+			To_Intersect^.CarQueue[East]:= To_Intersect^.CarQueue[East] + 1;
 		END_IF
-		IF To_Intersect.W_Light.Green = TRUE AND To_Intersect.CarQueue[West]>0 THEN
-			From_A.CarQueue[West]:= From_A.CarQueue[West] + 1;
-			To_Intersect.CarQueue[West]:= To_Intersect.CarQueue[West] - 1;
+		IF To_Intersect^.W_Light.Green = TRUE AND To_Intersect^.CarQueue[West]>0 THEN
+			From_A^.CarQueue[West]:= From_A^.CarQueue[West] + 1;
+			To_Intersect^.CarQueue[West]:= To_Intersect^.CarQueue[West] - 1;
 		END_IF
 	West:
-		IF From_A.W_Light.Green = TRUE AND From_A.CarQueue[West]>0 THEN
-			From_A.CarQueue[West]:= From_A.CarQueue[West] - 1;
-			To_Intersect.CarQueue[West]:= To_Intersect.CarQueue[West] + 1;
+		IF From_A^.W_Light.Green = TRUE AND From_A^.CarQueue[West]>0 THEN
+			From_A^.CarQueue[West]:= From_A^.CarQueue[West] - 1;
+			To_Intersect^.CarQueue[West]:= To_Intersect^.CarQueue[West] + 1;
 		END_IF
-		IF To_Intersect.E_Light.Green = TRUE AND To_Intersect.CarQueue[East]>0 THEN
-			From_A.CarQueue[East]:= From_A.CarQueue[East] + 1;
-			To_Intersect.CarQueue[East]:= To_Intersect.CarQueue[East] - 1;
+		IF To_Intersect^.E_Light.Green = TRUE AND To_Intersect^.CarQueue[East]>0 THEN
+			From_A^.CarQueue[East]:= From_A^.CarQueue[East] + 1;
+			To_Intersect^.CarQueue[East]:= To_Intersect^.CarQueue[East] - 1;
 		END_IF
 	END_CASE
 	CASE Direction_B OF
 		North:
-		IF From_B.N_Light.Green = TRUE AND From_B.CarQueue[North]>0 THEN
-			From_B.CarQueue[North]:= From_B.CarQueue[North] - 1;
-			To_Intersect.CarQueue[North]:= To_Intersect.CarQueue[North] + 1;
+		IF From_B^.N_Light.Green = TRUE AND From_B^.CarQueue[North]>0 THEN
+			From_B^.CarQueue[North]:= From_B^.CarQueue[North] - 1;
+			To_Intersect^.CarQueue[North]:= To_Intersect^.CarQueue[North] + 1;
 		END_IF
-		IF To_Intersect.S_Light.Green = TRUE AND To_Intersect.CarQueue[South]>0 THEN
-			From_B.CarQueue[South]:= From_B.CarQueue[South] + 1;
-			To_Intersect.CarQueue[South]:= To_Intersect.CarQueue[South] - 1;
+		IF To_Intersect^.S_Light.Green = TRUE AND To_Intersect^.CarQueue[South]>0 THEN
+			From_B^.CarQueue[South]:= From_B^.CarQueue[South] + 1;
+			To_Intersect^.CarQueue[South]:= To_Intersect^.CarQueue[South] - 1;
 		END_IF
 	South:
-		IF From_B.S_Light.Green = TRUE AND From_B.CarQueue[South]>0 THEN
-			From_B.CarQueue[South]:= From_B.CarQueue[South] - 1;
-			To_Intersect.CarQueue[South]:= To_Intersect.CarQueue[South] + 1;
+		IF From_B^.S_Light.Green = TRUE AND From_B^.CarQueue[South]>0 THEN
+			From_B^.CarQueue[South]:= From_B^.CarQueue[South] - 1;
+			To_Intersect^.CarQueue[South]:= To_Intersect^.CarQueue[South] + 1;
 		END_IF
-		IF To_Intersect.N_Light.Green = TRUE AND To_Intersect.CarQueue[North]>0 THEN
-			From_B.CarQueue[North]:= From_B.CarQueue[North] + 1;
-			To_Intersect.CarQueue[North]:= To_Intersect.CarQueue[North] - 1;
+		IF To_Intersect^.N_Light.Green = TRUE AND To_Intersect^.CarQueue[North]>0 THEN
+			From_B^.CarQueue[North]:= From_B^.CarQueue[North] + 1;
+			To_Intersect^.CarQueue[North]:= To_Intersect^.CarQueue[North] - 1;
 		END_IF
 	East:
-		IF From_B.E_Light.Green = TRUE AND From_B.CarQueue[East]>0 THEN
-			From_B.CarQueue[East]:= From_B.CarQueue[East] - 1;
-			To_Intersect.CarQueue[East]:= To_Intersect.CarQueue[East] + 1;
+		IF From_B^.E_Light.Green = TRUE AND From_B^.CarQueue[East]>0 THEN
+			From_B^.CarQueue[East]:= From_B^.CarQueue[East] - 1;
+			To_Intersect^.CarQueue[East]:= To_Intersect^.CarQueue[East] + 1;
 		END_IF
-		IF To_Intersect.W_Light.Green = TRUE AND To_Intersect.CarQueue[West]>0 THEN
-			From_B.CarQueue[West]:= From_B.CarQueue[West] + 1;
-			To_Intersect.CarQueue[West]:= To_Intersect.CarQueue[West] - 1;
+		IF To_Intersect^.W_Light.Green = TRUE AND To_Intersect^.CarQueue[West]>0 THEN
+			From_B^.CarQueue[West]:= From_B^.CarQueue[West] + 1;
+			To_Intersect^.CarQueue[West]:= To_Intersect^.CarQueue[West] - 1;
 		END_IF
 	West:
-		IF From_B.W_Light.Green = TRUE AND From_B.CarQueue[West]>0 THEN
-			From_B.CarQueue[West]:= From_B.CarQueue[West] - 1;
-			To_Intersect.CarQueue[West]:= To_Intersect.CarQueue[West] + 1;
+		IF From_B^.W_Light.Green = TRUE AND From_B^.CarQueue[West]>0 THEN
+			From_B^.CarQueue[West]:= From_B^.CarQueue[West] - 1;
+			To_Intersect^.CarQueue[West]:= To_Intersect^.CarQueue[West] + 1;
 		END_IF
-		IF To_Intersect.E_Light.Green = TRUE AND To_Intersect.CarQueue[East]>0 THEN
-			From_B.CarQueue[East]:= From_B.CarQueue[East] + 1;
-			To_Intersect.CarQueue[East]:= To_Intersect.CarQueue[East] - 1;
+		IF To_Intersect^.E_Light.Green = TRUE AND To_Intersect^.CarQueue[East]>0 THEN
+			From_B^.CarQueue[East]:= From_B^.CarQueue[East] + 1;
+			To_Intersect^.CarQueue[East]:= To_Intersect^.CarQueue[East] - 1;
 		END_IF
 	END_CASE
 	

@@ -2,7 +2,7 @@
 <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.29">
 	<DataTypes>
 		<DataType>
-			<Name GUID="{18071995-0000-0000-0000-002000000004}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..3] OF BIT</Name>
+			<Name GUID="{18071995-0000-0000-0000-002000000004}" IecBaseType="true" BitType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..3] OF BIT</Name>
 			<BitSize>4</BitSize>
 			<BaseType GUID="{18071995-0000-0000-0000-000000000010}">BIT</BaseType>
 			<ArrayInfo>
@@ -60,23 +60,6 @@
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
 						<Name>PlcTask Inputs</Name>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.N_Ped</Name>
-							<Comment><![CDATA[pedestrian crossing request buttons]]></Comment>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.S_Ped</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.E_Ped</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.W_Ped</Name>
-							<Type>BOOL</Type>
-						</Var>
 						<Var>
 							<Name>Traffic_GVL.FirstAndMain.N_Ped</Name>
 							<Comment><![CDATA[pedestrian crossing request buttons]]></Comment>
@@ -148,71 +131,6 @@
 					</Vars>
 					<Vars VarGrpType="2" AreaNo="1">
 						<Name>PlcTask Outputs</Name>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.N_Light.Red</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.N_Light.Amber</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.N_Light.Green</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.S_Light.Red</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.S_Light.Amber</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.S_Light.Green</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.W_Light.Red</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.W_Light.Amber</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.W_Light.Green</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.E_Light.Red</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.E_Light.Amber</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.E_Light.Green</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.N_Cross</Name>
-							<Comment><![CDATA[Pedestrian safe to cross indicator (the blue light)]]></Comment>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.S_Cross</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.E_Cross</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>TrafficManager.UpdateLights.Intersect.W_Cross</Name>
-							<Type>BOOL</Type>
-						</Var>
 						<Var>
 							<Name>Traffic_GVL.FirstAndMain.N_Light.Red</Name>
 							<Type>BOOL</Type>

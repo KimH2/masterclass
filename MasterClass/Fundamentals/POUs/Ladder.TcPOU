@@ -694,7 +694,7 @@ END_VAR
                       <l2 n="InputItems" cet="BoxTreeOperand">
                         <o>
                           <o n="Operand" t="Operand">
-                            <v n="Operand">"Comparison_GVL.TurnOnFor"</v>
+                            <v n="Operand">"NOT Comparison_GVL.PulseTimer_TP.Q"</v>
                             <v n="Type">"BOOL"</v>
                             <v n="Comment">""</v>
                             <v n="SymbolComment">""</v>

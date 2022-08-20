@@ -7,6 +7,7 @@ VAR
 	CountOnes		:INT:=1;
 	CountFives		:INT:=1;
 	JustOncePer 	:R_TRIG;
+	DidSomething:BOOL;
 	AlsoCountTo25	: BOOL;
 END_VAR
 VAR CONSTANT
@@ -30,7 +31,7 @@ END_VAR]]></Declaration>
 	
 	Comparison_GVL.OffTimer_TOF(IN:=Comparison_GVL.TurnOFFAfter,PT:= ST_DURATION);
 	Comparison_GVL.OnTimer_TON(IN:=Comparison_GVL.TurnONAfter,PT:= ST_DURATION);
-	Comparison_GVL.PulseTimer_TP(IN:=Comparison_GVL.TurnOnFor,PT:= ChangeTime);
+	Comparison_GVL.PulseTimer_TP(IN:=NOT Comparison_GVL.PulseTimer_TP.Q,PT:= ChangeTime);
 	JustOncePer(CLK:= Comparison_GVL.PulseTimer_TP.Q);
 	
 	IF JustOncePer.Q THEN
@@ -42,7 +43,7 @@ END_VAR]]></Declaration>
 		CountOnes:=1;
 	END_IF	
 	
-	DoSomething(Counter:= (CountOnes*CountFives) );
+	DidSomething:= DoSomething(Counter:= (CountOnes*CountFives) );
 	
 	IF CountFives = 5 THEN
 		CountFives:=1;
@@ -91,9 +92,10 @@ END_VAR
 		AlsoCountTo25:=TRUE;
 	ELSE
 		DoSomething:=FALSE;
+		Comparison_GVL.TurnOnFor:=TRUE;
 END_CASE
 
-Comparison_GVL.TurnOnFor:=TRUE;]]></ST>
+]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="StructuredText">
@@ -158,6 +160,7 @@ Comparison_GVL.TurnOnFor:=TRUE;]]></ST>
       <LineId Id="42" Count="0" />
       <LineId Id="23" Count="1" />
       <LineId Id="18" Count="1" />
+      <LineId Id="57" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="26" Count="0" />
       <LineId Id="25" Count="0" />
