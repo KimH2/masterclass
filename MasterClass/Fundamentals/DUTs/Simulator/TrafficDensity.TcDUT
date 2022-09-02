@@ -2,6 +2,8 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
   <DUT Name="TrafficDensity" Id="{8d145b45-9b66-456c-9b7a-46cdd9126d44}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'OPC.UA.DA' := '1'}
+{attribute 'OPC.UA.DA.StructuredType' := '1'}
 TYPE TrafficDensity :
 (
 	None 	:= 0,

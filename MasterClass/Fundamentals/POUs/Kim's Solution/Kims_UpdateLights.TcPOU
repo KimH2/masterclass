@@ -82,6 +82,7 @@ CASE LightState OF
 				END_IF
 				IF FlowTimer.Q THEN
 				Transition:= NewLightState;
+				Intersect^.E_Cross:=Intersect^.W_Cross:= FALSE;
 				END_IF;	
 		END_CASE
 	EW_Flow:
@@ -131,6 +132,7 @@ Transition:= Stay_Green;
 				END_IF
 				IF FlowTimer.Q THEN
 				Transition:= NewLightState;
+				Intersect^.N_Cross:=Intersect^.S_Cross:= FALSE;
 				END_IF;	
 		END_CASE
 	NorthOnly:
@@ -158,27 +160,6 @@ Transition:= Stay_Green;
 END_CASE
 ]]></ST>
     </Implementation>
-    <Method Name="SetLight" Id="{f45c2384-f701-47b6-aeee-55db2e125d4c}">
-      <Declaration><![CDATA[METHOD SetLight : BOOL
-VAR_INPUT
-	Light: POINTER TO TrafficLight;
-	Setting: INT;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[CASE Setting OF
-	RED:
-	Light^.Red:=TRUE;
-	Light^.Amber := Light^.Green:= FALSE;
-	AMBER:
-	Light^.Amber:=TRUE;
-	Light^.Red := Light^.Green:= FALSE;
-	GREEN:
-	Light^.Green:=TRUE;
-	Light^.Amber := Light^.Red:= FALSE;
-END_CASE]]></ST>
-      </Implementation>
-    </Method>
     <LineIds Name="Kims_UpdateLights">
       <LineId Id="156" Count="0" />
       <LineId Id="161" Count="0" />
@@ -222,6 +203,7 @@ END_CASE]]></ST>
       <LineId Id="163" Count="1" />
       <LineId Id="160" Count="0" />
       <LineId Id="71" Count="1" />
+      <LineId Id="251" Count="0" />
       <LineId Id="68" Count="0" />
       <LineId Id="51" Count="0" />
       <LineId Id="18" Count="0" />
@@ -248,7 +230,9 @@ END_CASE]]></ST>
       <LineId Id="89" Count="1" />
       <LineId Id="172" Count="5" />
       <LineId Id="171" Count="0" />
-      <LineId Id="91" Count="2" />
+      <LineId Id="91" Count="1" />
+      <LineId Id="252" Count="0" />
+      <LineId Id="93" Count="0" />
       <LineId Id="28" Count="0" />
       <LineId Id="19" Count="0" />
       <LineId Id="29" Count="0" />
@@ -272,19 +256,6 @@ END_CASE]]></ST>
       <LineId Id="146" Count="0" />
       <LineId Id="11" Count="0" />
       <LineId Id="62" Count="0" />
-    </LineIds>
-    <LineIds Name="Kims_UpdateLights.SetLight">
-      <LineId Id="5" Count="0" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="12" Count="0" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="11" Count="0" />
-      <LineId Id="8" Count="0" />
-      <LineId Id="17" Count="0" />
-      <LineId Id="9" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

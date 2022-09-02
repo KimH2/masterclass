@@ -72,79 +72,150 @@ IF CarSpawner.Q THEN
 	North:
 		IF From_A^.N_Light.Green = TRUE AND From_A^.CarQueue[North]>0 THEN
 			From_A^.CarQueue[North]:= From_A^.CarQueue[North] - 1;
-			To_Intersect^.CarQueue[North]:= To_Intersect^.CarQueue[North] + 1;
+			IF To_Intersect^.N_Light.Green AND (To_Intersect^.Exit1 = North OR To_Intersect^.Exit2 = North) THEN
+				To_Intersect^.CarQueue[North]:= To_Intersect^.CarQueue[North] - 1;
+			ELSE
+				To_Intersect^.CarQueue[North]:= To_Intersect^.CarQueue[North] + 1;
+			END_IF
+			
 		END_IF
 		IF To_Intersect^.S_Light.Green = TRUE AND To_Intersect^.CarQueue[South]>0 THEN
-			From_A^.CarQueue[South]:= From_A^.CarQueue[South] + 1;
 			To_Intersect^.CarQueue[South]:= To_Intersect^.CarQueue[South] - 1;
+			IF From_A^.S_Light.Green AND (From_A^.Exit1 = South OR From_A^.Exit2 = South) THEN
+				From_A^.CarQueue[South]:= From_A^.CarQueue[South] - 1;
+			ELSE
+				From_A^.CarQueue[South]:= From_A^.CarQueue[South] + 1;
+			END_IF
 		END_IF
 	South:
 		IF From_A^.S_Light.Green = TRUE AND From_A^.CarQueue[South]>0 THEN
 			From_A^.CarQueue[South]:= From_A^.CarQueue[South] - 1;
-			To_Intersect^.CarQueue[South]:= To_Intersect^.CarQueue[South] + 1;
+			IF To_Intersect^.S_Light.Green AND (To_Intersect^.Exit1 = South OR To_Intersect^.Exit2 = South) THEN
+				To_Intersect^.CarQueue[South]:= To_Intersect^.CarQueue[South] - 1;
+			ELSE
+				To_Intersect^.CarQueue[South]:= To_Intersect^.CarQueue[SOuth] + 1;
+			END_IF
+			
 		END_IF
 		IF To_Intersect^.N_Light.Green = TRUE AND To_Intersect^.CarQueue[North]>0 THEN
-			From_A^.CarQueue[North]:= From_A^.CarQueue[North] + 1;
 			To_Intersect^.CarQueue[North]:= To_Intersect^.CarQueue[North] - 1;
+			IF From_A^.N_Light.Green AND (From_A^.Exit1 = North OR From_A^.Exit2 = North) THEN
+				From_A^.CarQueue[North]:= From_A^.CarQueue[North] - 1;
+			ELSE
+				From_A^.CarQueue[North]:= From_A^.CarQueue[North] + 1;
+			END_IF
 		END_IF
 	East:
 		IF From_A^.E_Light.Green = TRUE AND From_A^.CarQueue[East]>0 THEN
 			From_A^.CarQueue[East]:= From_A^.CarQueue[East] - 1;
-			To_Intersect^.CarQueue[East]:= To_Intersect^.CarQueue[East] + 1;
+			IF To_Intersect^.E_Light.Green AND (To_Intersect^.Exit1 = East OR To_Intersect^.Exit2 = East) THEN
+				To_Intersect^.CarQueue[East]:= To_Intersect^.CarQueue[East] - 1;
+			ELSE
+				To_Intersect^.CarQueue[East]:= To_Intersect^.CarQueue[East] + 1;
+			END_IF
+			
 		END_IF
 		IF To_Intersect^.W_Light.Green = TRUE AND To_Intersect^.CarQueue[West]>0 THEN
-			From_A^.CarQueue[West]:= From_A^.CarQueue[West] + 1;
 			To_Intersect^.CarQueue[West]:= To_Intersect^.CarQueue[West] - 1;
+			IF From_A^.W_Light.Green AND (From_A^.Exit1 = West OR From_A^.Exit2 = West) THEN
+				From_A^.CarQueue[West]:= From_A^.CarQueue[West] - 1;
+			ELSE
+				From_A^.CarQueue[West]:= From_A^.CarQueue[West] + 1;
+			END_IF
 		END_IF
 	West:
 		IF From_A^.W_Light.Green = TRUE AND From_A^.CarQueue[West]>0 THEN
 			From_A^.CarQueue[West]:= From_A^.CarQueue[West] - 1;
-			To_Intersect^.CarQueue[West]:= To_Intersect^.CarQueue[West] + 1;
+			IF To_Intersect^.W_Light.Green AND (To_Intersect^.Exit1 = West OR To_Intersect^.Exit2 = West) THEN
+				To_Intersect^.CarQueue[West]:= To_Intersect^.CarQueue[West] - 1;
+			ELSE
+				To_Intersect^.CarQueue[West]:= To_Intersect^.CarQueue[West] + 1;
+			END_IF
+			
 		END_IF
 		IF To_Intersect^.E_Light.Green = TRUE AND To_Intersect^.CarQueue[East]>0 THEN
-			From_A^.CarQueue[East]:= From_A^.CarQueue[East] + 1;
 			To_Intersect^.CarQueue[East]:= To_Intersect^.CarQueue[East] - 1;
+			IF From_A^.E_Light.Green AND (From_A^.Exit1 = East OR From_A^.Exit2 = East) THEN
+				From_A^.CarQueue[East]:= From_A^.CarQueue[East] - 1;
+			ELSE
+				From_A^.CarQueue[East]:= From_A^.CarQueue[East] + 1;
+			END_IF
 		END_IF
 	END_CASE
-	CASE Direction_B OF
-		North:
+		CASE Direction_B OF
+	North:
 		IF From_B^.N_Light.Green = TRUE AND From_B^.CarQueue[North]>0 THEN
 			From_B^.CarQueue[North]:= From_B^.CarQueue[North] - 1;
-			To_Intersect^.CarQueue[North]:= To_Intersect^.CarQueue[North] + 1;
+			IF To_Intersect^.N_Light.Green AND (To_Intersect^.Exit1 = North OR To_Intersect^.Exit2 = North) THEN
+				To_Intersect^.CarQueue[North]:= To_Intersect^.CarQueue[North] - 1;
+			ELSE
+				To_Intersect^.CarQueue[North]:= To_Intersect^.CarQueue[North] + 1;
+			END_IF
+			
 		END_IF
 		IF To_Intersect^.S_Light.Green = TRUE AND To_Intersect^.CarQueue[South]>0 THEN
-			From_B^.CarQueue[South]:= From_B^.CarQueue[South] + 1;
 			To_Intersect^.CarQueue[South]:= To_Intersect^.CarQueue[South] - 1;
+			IF From_B^.S_Light.Green AND (From_B^.Exit1 = South OR From_B^.Exit2 = South) THEN
+				From_B^.CarQueue[South]:= From_B^.CarQueue[South] - 1;
+			ELSE
+				From_B^.CarQueue[South]:= From_B^.CarQueue[South] + 1;
+			END_IF
 		END_IF
 	South:
 		IF From_B^.S_Light.Green = TRUE AND From_B^.CarQueue[South]>0 THEN
 			From_B^.CarQueue[South]:= From_B^.CarQueue[South] - 1;
-			To_Intersect^.CarQueue[South]:= To_Intersect^.CarQueue[South] + 1;
+			IF To_Intersect^.S_Light.Green AND (To_Intersect^.Exit1 = South OR To_Intersect^.Exit2 = South) THEN
+				To_Intersect^.CarQueue[South]:= To_Intersect^.CarQueue[South] - 1;
+			ELSE
+				To_Intersect^.CarQueue[South]:= To_Intersect^.CarQueue[SOuth] + 1;
+			END_IF
+			
 		END_IF
 		IF To_Intersect^.N_Light.Green = TRUE AND To_Intersect^.CarQueue[North]>0 THEN
-			From_B^.CarQueue[North]:= From_B^.CarQueue[North] + 1;
 			To_Intersect^.CarQueue[North]:= To_Intersect^.CarQueue[North] - 1;
+			IF From_B^.N_Light.Green AND (From_B^.Exit1 = North OR From_B^.Exit2 = North) THEN
+				From_B^.CarQueue[North]:= From_B^.CarQueue[North] - 1;
+			ELSE
+				From_B^.CarQueue[North]:= From_B^.CarQueue[North] + 1;
+			END_IF
 		END_IF
 	East:
 		IF From_B^.E_Light.Green = TRUE AND From_B^.CarQueue[East]>0 THEN
 			From_B^.CarQueue[East]:= From_B^.CarQueue[East] - 1;
-			To_Intersect^.CarQueue[East]:= To_Intersect^.CarQueue[East] + 1;
+			IF To_Intersect^.E_Light.Green AND (To_Intersect^.Exit1 = East OR To_Intersect^.Exit2 = East) THEN
+				To_Intersect^.CarQueue[East]:= To_Intersect^.CarQueue[East] - 1;
+			ELSE
+				To_Intersect^.CarQueue[East]:= To_Intersect^.CarQueue[East] + 1;
+			END_IF
+			
 		END_IF
 		IF To_Intersect^.W_Light.Green = TRUE AND To_Intersect^.CarQueue[West]>0 THEN
-			From_B^.CarQueue[West]:= From_B^.CarQueue[West] + 1;
 			To_Intersect^.CarQueue[West]:= To_Intersect^.CarQueue[West] - 1;
+			IF From_B^.W_Light.Green AND (From_B^.Exit1 = West OR From_B^.Exit2 = West) THEN
+				From_B^.CarQueue[West]:= From_B^.CarQueue[West] - 1;
+			ELSE
+				From_B^.CarQueue[West]:= From_B^.CarQueue[West] + 1;
+			END_IF
 		END_IF
 	West:
 		IF From_B^.W_Light.Green = TRUE AND From_B^.CarQueue[West]>0 THEN
 			From_B^.CarQueue[West]:= From_B^.CarQueue[West] - 1;
-			To_Intersect^.CarQueue[West]:= To_Intersect^.CarQueue[West] + 1;
+			IF To_Intersect^.W_Light.Green AND (To_Intersect^.Exit1 = West OR To_Intersect^.Exit2 = West) THEN
+				To_Intersect^.CarQueue[West]:= To_Intersect^.CarQueue[West] - 1;
+			ELSE
+				To_Intersect^.CarQueue[West]:= To_Intersect^.CarQueue[West] + 1;
+			END_IF
+			
 		END_IF
 		IF To_Intersect^.E_Light.Green = TRUE AND To_Intersect^.CarQueue[East]>0 THEN
-			From_B^.CarQueue[East]:= From_B^.CarQueue[East] + 1;
 			To_Intersect^.CarQueue[East]:= To_Intersect^.CarQueue[East] - 1;
+			IF From_B^.E_Light.Green AND (From_B^.Exit1 = East OR From_B^.Exit2 = East) THEN
+				From_B^.CarQueue[East]:= From_B^.CarQueue[East] - 1;
+			ELSE
+				From_B^.CarQueue[East]:= From_B^.CarQueue[East] + 1;
+			END_IF
 		END_IF
 	END_CASE
-	
 	
 END_IF
 
@@ -177,28 +248,25 @@ END_IF
       <LineId Id="20" Count="0" />
       <LineId Id="29" Count="2" />
       <LineId Id="37" Count="0" />
+      <LineId Id="132" Count="1" />
+      <LineId Id="135" Count="1" />
+      <LineId Id="134" Count="0" />
       <LineId Id="32" Count="1" />
-      <LineId Id="72" Count="2" />
+      <LineId Id="72" Count="1" />
+      <LineId Id="138" Count="3" />
+      <LineId Id="137" Count="0" />
       <LineId Id="71" Count="0" />
       <LineId Id="34" Count="0" />
-      <LineId Id="39" Count="2" />
-      <LineId Id="38" Count="0" />
-      <LineId Id="76" Count="2" />
+      <LineId Id="142" Count="15" />
       <LineId Id="75" Count="0" />
       <LineId Id="35" Count="0" />
-      <LineId Id="43" Count="2" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="80" Count="2" />
+      <LineId Id="158" Count="15" />
       <LineId Id="79" Count="0" />
       <LineId Id="36" Count="0" />
-      <LineId Id="47" Count="2" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="84" Count="2" />
+      <LineId Id="174" Count="15" />
       <LineId Id="83" Count="0" />
       <LineId Id="22" Count="0" />
-      <LineId Id="50" Count="0" />
-      <LineId Id="87" Count="35" />
-      <LineId Id="24" Count="0" />
+      <LineId Id="190" Count="72" />
       <LineId Id="123" Count="1" />
       <LineId Id="23" Count="0" />
       <LineId Id="21" Count="0" />

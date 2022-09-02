@@ -4,11 +4,18 @@
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
 	ClimbTheRungs, MoveOnToCode, PlayInTraffic, RunOnce:BOOL:=FALSE;
+	
+	{attribute 'OPC.UA.DA' := '1'}
+	{attribute 'OPC.UA.DA.StructuredType' := '1'}
+	FirstSteps:Breakout;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[// <- this is how you comment out lines, anything after the // will not be part of the program 
 //this is how you can leave notes for future developers or if code isn't working right you can remove it temporarily to test things without deleting it  
+
+//THIS SPACE IS WHERE YOU CAN PUT YOUR FIRST CODE, Try removing the // from the next line
+//FirstSteps.BlueLight := TRUE;
 
 
 IF ClimbTheRungs THEN
@@ -21,21 +28,19 @@ ELSIF PlayInTraffic THEN
 	runOnce:=TRUE;
 END_IF
 TrafficManager.Update();
-ELSE
-	//What you were expecting more?
 END_IF
 ]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="7" Count="1" />
-      <LineId Id="22" Count="1" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="39" Count="2" />
+      <LineId Id="23" Count="0" />
       <LineId Id="25" Count="2" />
       <LineId Id="6" Count="0" />
       <LineId Id="14" Count="0" />
       <LineId Id="31" Count="3" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="29" Count="1" />
-      <LineId Id="17" Count="0" />
+      <LineId Id="16" Count="1" />
       <LineId Id="13" Count="0" />
     </LineIds>
   </POU>

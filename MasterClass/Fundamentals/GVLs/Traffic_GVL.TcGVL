@@ -2,10 +2,19 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
   <GVL Name="Traffic_GVL" Id="{8b57eb25-a288-418b-86ee-66440a9a4493}">
     <Declaration><![CDATA[VAR_GLOBAL
+	{attribute 'OPC.UA.DA' := '1'}
+	{attribute 'OPC.UA.DA.StructuredType' := '1'}
 	FirstAndMain 	:Intersection;
+	{attribute 'OPC.UA.DA' := '1'}
+	{attribute 'OPC.UA.DA.StructuredType' := '1'}
 	SecondAndMain 	:Intersection;
+	{attribute 'OPC.UA.DA' := '1'}
+	{attribute 'OPC.UA.DA.StructuredType' := '1'}
 	FirstAndPine	:Intersection;
+	{attribute 'OPC.UA.DA' := '1'}
+	{attribute 'OPC.UA.DA.StructuredType' := '1'}
 	SecondAndPine	:Intersection;
+	
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>

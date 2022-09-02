@@ -17,6 +17,9 @@
     <LibraryReferences>{05b06a2e-2038-4c85-9f5f-71aa6d05165a}</LibraryReferences>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DUTs\Breakout.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DUTs\Simulator\Compass.TcDUT">
       <SubType>Code</SubType>
     </Compile>

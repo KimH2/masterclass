@@ -1,13 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
-  <DUT Name="TrafficLight" Id="{b2bebb51-35a9-442b-b4e0-7139834a58b1}">
+  <DUT Name="Breakout" Id="{30c12718-b137-4546-8881-6a1889ff0049}">
     <Declaration><![CDATA[	{attribute 'OPC.UA.DA' := '1'}
 	{attribute 'OPC.UA.DA.StructuredType' := '1'}
-TYPE TrafficLight :
+TYPE Breakout :
 STRUCT
-	Red		AT %Q*:BOOL; 
-	Amber	AT %Q*:BOOL;
-	Green	AT %Q*:BOOL;
+	RedLight	AT %Q*:BOOL; 
+	AmberLight	AT %Q*:BOOL;
+	GreenLight	AT %Q*:BOOL;
+	BlueLight  	AT %Q*:BOOL;
+	ButtonPushed AT %I*:BOOL;
 END_STRUCT
 END_TYPE
 ]]></Declaration>
